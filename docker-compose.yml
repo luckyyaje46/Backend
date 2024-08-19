@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456aA
+      POSTGRES_DB: lucky
+    ports:
+      - "5432:5432"
+
+  account-manager:
+    build:
+      context: .
+      dockerfile: Dockerfile.account
+    environment:
+      DATABASE_URL: "postgresql://postgres:123456aA@localhost:5432/lucky"
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+
+  payment-manager:
+    build:
+      context: .
+      dockerfile: Dockerfile.payment
+    environment:
+      DATABASE_URL: "postgresql://postgres:123456aA@localhost:5432/lucky"
+    depends_on:
+      - postgres
+    ports:
+      - "3001:3001"
